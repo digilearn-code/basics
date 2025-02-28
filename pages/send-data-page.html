@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send data to the server</title>
+</head>
+<body>
+<!-- the 'action' attribute specifies the endpoint to send the data to -->
+<form action="/send-data" method="post">
+    <label>First name:
+        <input type="text" name="first_name" value=""/>
+    </label>
+    <label>Last name:
+        <input type="text" name="last_name" value=""/>
+    </label>
+    <label>Latitude:
+        <input id="latitude" type="text" name="latitude" value=""/>
+    </label>
+    <label>Longitude:
+        <input id="longitude" type="text" name="longitude" value=""/>
+    </label>
+    <button type="submit">Send</button>
+</form>
+</body>
+<script>
+    if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude
+            document.getElementById("latitude").value = lat.toString()
+            const lon = position.coords.longitude
+            document.getElementById("longitude").value = lon.toString()
+        }, error => {
+            window.alert(error.message)
+        })
+    }
+</script>
+</html>
