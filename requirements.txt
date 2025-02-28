@@ -1,0 +1,4 @@
+flask
+chevron
+requests
+mariadb
