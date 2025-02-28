@@ -8,6 +8,7 @@ from flask import Flask, Response, jsonify, request
 app = Flask(__name__)
 
 # 01 A simple endpoint returning a text string
+# The name of the function, 'index', is irrelevant; only the route counts
 @app.route('/')
 def index():
     return "Hello World!"
@@ -62,11 +63,11 @@ def get_image():
 def get_data():
     data = {
         "hello": "world",
-        "age": 4000000000,
+        "age": 4_000_000_000,
         "address": {
             "system": "solar",
             "planet": 3,
-            "radius": 6300000,
+            "radius": 6_300_000,
         }
     }
     return jsonify(data)
