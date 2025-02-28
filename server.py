@@ -7,17 +7,19 @@ from flask import Flask, Response, jsonify, request
 
 app = Flask(__name__)
 
-
+# 01 A simple endpoint returning a text string
 @app.route('/')
 def index():
     return "Hello World!"
 
 
+# 02 An HTML page
 @app.route('/page')
 def page_html():
     return "<html><body style='background-color: yellow;'>This is an <b>html</b> page</body></html>"
 
 
+# 03 An HTML page read from the filesystem
 @app.route('/another-page')
 def another_page_html():
     with open('pages/another-page.html') as f:
@@ -25,15 +27,18 @@ def another_page_html():
     return page
 
 
+# 04 An HTML page read from the filesystem, with the name of the page passed as a named parameter
+# call url http://localhost:5000/somehow-dynamic-page-html?page-name=another-page
 @app.route('/somehow-dynamic-page')
 def somehow_dynamic_page_html():
-    # call url http://localhost:5000/somehow-dynamic-page-html?page-name=another-page
     page_name = request.args.get('page-name')
     with open(page_name + '.html') as f:
         page = f.read()
     return page
 
 
+# 05 A dynamic HTML page, with data passed injected inside the page
+# call url http://localhost:5000/dynamic-page-html?person-name=MickeyMouse
 @app.route('/dynamic-page')
 def dynamic_page_html():
     person_name = request.args.get('person-name')
@@ -43,6 +48,7 @@ def dynamic_page_html():
     return filled_page
 
 
+# 06 An image, read from the file system (you must specify the mimetype (content-type))
 @app.route('/image')
 def get_image():
     with open('images/smiley.png', 'rb') as f:
@@ -50,6 +56,8 @@ def get_image():
     return Response(data, mimetype='image/png')
 
 
+# 07 JSON data. Most fundamental way to create an API.
+# Note how jsonify() converts the Python dictionary into a JSON message
 @app.route('/data')
 def get_data():
     data = {
@@ -63,6 +71,9 @@ def get_data():
     }
     return jsonify(data)
 
+
+# 08 JSON data, coming from the database
+# Note the usage of 'with ... as ...' instead of '=', guaranteeing the object is properly closed after usage
 @app.route('/database-data')
 def get_database_data():
     with open(Path.home() / 'database_connection.json') as f:

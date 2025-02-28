@@ -1,0 +1,7 @@
+{
+    "user": "username_used_to_access_database",
+    "password": "change_this",
+    "host": "the_ip_or_name_of_the_database_server",
+    "port": 3306,
+    "database": "your_database_name"
+}
