@@ -20,7 +20,7 @@ def page_html():
 
 @app.route('/another-page')
 def another_page_html():
-    with open('another-page.html') as f:
+    with open('pages/another-page.html') as f:
         page = f.read()
     return page
 
@@ -37,7 +37,7 @@ def somehow_dynamic_page_html():
 @app.route('/dynamic-page')
 def dynamic_page_html():
     person_name = request.args.get('person-name')
-    with open('dynamic-page.html') as f:
+    with open('pages/dynamic-page.html') as f:
         page = f.read()
     filled_page = chevron.render(page, {'name': person_name})
     return filled_page
@@ -45,7 +45,7 @@ def dynamic_page_html():
 
 @app.route('/image')
 def get_image():
-    with open('smiley.png', 'rb') as f:
+    with open('images/smiley.png', 'rb') as f:
         data = f.read()
     return Response(data, mimetype='image/png')
 
