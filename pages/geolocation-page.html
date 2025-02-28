@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geolocation</title>
+</head>
+<body>
+<div>
+    Latitude: <span id="latitude"></span>
+</div>
+<div>
+    Longitude: <span id="longitude"></span>
+</div>
+</body>
+<script>
+    // this here is javascript code.
+    // it will copy geolocation data into the "latitude" and the "longitude" div elements
+    if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude
+            document.getElementById("latitude").innerText = lat.toString()
+            const lon = position.coords.longitude
+            document.getElementById("longitude").innerText = lon.toString()
+        }, error => {
+            window.alert(error.message)
+        })
+    }
+
+</script>
+</html>
