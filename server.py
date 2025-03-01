@@ -97,7 +97,7 @@ def get_home():
 def post_login():
     username = request.form['username']
     password = request.form['password']
-    # check password; if failure, return error page
+    # check password using the db; if failure, return error page
     session['username'] = username
     with open('pages/dashboard-page.html') as f:
         return chevron.render(f.read(), {'username': session['username']})
