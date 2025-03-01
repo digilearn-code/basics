@@ -85,9 +85,11 @@ def get_database_data():
             cursor.execute("SELECT id, iso2, iso3, denomination FROM countries")
             return jsonify(cursor.fetchall())
 
+
 # 09 micro application
 # /home displays the login page
-# /login performs the login and displays the dashboard page on success
+# /login performs the login, put the username in session and displays the dashboard page on success
+# /logout removes the username from the session
 @app.route('/home')
 def get_home():
     with open('pages/login-page.html') as f:
@@ -98,6 +100,7 @@ def post_login():
     username = request.form['username']
     password = request.form['password']
     # check password using the db; if failure, return error page
+    # put the username in the session
     session['username'] = username
     with open('pages/dashboard-page.html') as f:
         return chevron.render(f.read(), {'username': session['username']})
