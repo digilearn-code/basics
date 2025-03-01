@@ -3,9 +3,10 @@ from pathlib import Path
 
 import chevron
 import mariadb
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request, session
 
 app = Flask(__name__)
+app.secret_key = 'unique_secret_key'
 
 # 01 A simple endpoint returning a text string
 # The name of the function, 'index', is irrelevant; only the route counts
@@ -84,6 +85,28 @@ def get_database_data():
             cursor.execute("SELECT id, iso2, iso3, denomination FROM countries")
             return jsonify(cursor.fetchall())
 
+# 09 micro application
+# /home displays the login page
+# /login performs the login and displays the dashboard page on success
+@app.route('/home')
+def get_home():
+    with open('pages/login-page.html') as f:
+        return f.read()
+
+@app.route('/login', methods=['POST'])
+def post_login():
+    username = request.form['username']
+    password = request.form['password']
+    # check password; if failure, return error page
+    session['username'] = username
+    with open('pages/dashboard-page.html') as f:
+        return chevron.render(f.read(), {'username': session['username']})
+
+@app.route('/logout')
+def get_logout():
+    session.pop('username', None)
+    with open('pages/login-page.html') as f:
+        return f.read()
 
 if __name__ == '__main__':
     app.run()
