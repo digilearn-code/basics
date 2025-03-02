@@ -101,8 +101,7 @@ def post_login():
     password = request.form['password']
     # check password using the db; if failure, return error page
     if password != '1234':
-        with open('pages/error-page.html') as f:
-            return chevron.render(f.read(), {'error': 'Invalid password'})
+        return "Error: Invalid password"
     # put the username in the session
     session['username'] = username
     with open('pages/dashboard-page.html') as f:
