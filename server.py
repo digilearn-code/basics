@@ -100,8 +100,16 @@ def post_login():
     username = request.form['username']
     password = request.form['password']
     # check password using the db; if failure, return error page
-    if password != '1234':
-        return "Error: Invalid password"
+    with open(Path.home() / 'database_connection.json') as f:
+        connection_parameters = json.load(f)
+    with mariadb.connect(**connection_parameters) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT username, password FROM users WHERE username = %s", (username,))
+            result = cursor.fetchone()
+            if result is None:
+                return "Error: Invalid username"
+            elif result[1] != password:
+                return "Error: Invalid password"
     # put the username in the session
     session['username'] = username
     with open('pages/dashboard-page.html') as f:
