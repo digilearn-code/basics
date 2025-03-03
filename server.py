@@ -24,7 +24,7 @@ def page_html():
 # 03 An HTML page read from the filesystem
 @app.route('/another-page')
 def another_page_html():
-    with open('pages/another-page.html') as f:
+    with open('pages/another.html') as f:
         page = f.read()
     return page
 
@@ -44,7 +44,7 @@ def somehow_dynamic_page_html():
 @app.route('/dynamic-page')
 def dynamic_page_html():
     person_name = request.args.get('person-name')
-    with open('pages/dynamic-page.html') as f:
+    with open('pages/dynamic.html') as f:
         page = f.read()
     filled_page = chevron.render(page, {'name': person_name})
     return filled_page
@@ -92,7 +92,7 @@ def get_database_data():
 # /logout removes the username from the session
 @app.route('/home')
 def get_home():
-    with open('pages/login-page.html') as f:
+    with open('pages/login.html') as f:
         return f.read()
 
 @app.route('/login', methods=['POST'])
@@ -112,13 +112,13 @@ def post_login():
                 return "Error: Invalid password"
     # put the username in the session
     session['username'] = username
-    with open('pages/dashboard-page.html') as f:
+    with open('pages/dashboard.html') as f:
         return chevron.render(f.read(), {'username': session['username']})
 
 @app.route('/logout')
 def get_logout():
     session.pop('username', None)
-    with open('pages/login-page.html') as f:
+    with open('pages/login.html') as f:
         return f.read()
 
 if __name__ == '__main__':
