@@ -3,9 +3,10 @@ from pathlib import Path
 
 import chevron
 import mariadb
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request, session
 
 app = Flask(__name__)
+app.secret_key = 'unique_secret_key'
 
 # 01 A simple endpoint returning a text string
 # The name of the function, 'index', is irrelevant; only the route counts
@@ -23,7 +24,7 @@ def page_html():
 # 03 An HTML page read from the filesystem
 @app.route('/another-page')
 def another_page_html():
-    with open('pages/another-page.html') as f:
+    with open('pages/another.html') as f:
         page = f.read()
     return page
 
@@ -43,7 +44,7 @@ def somehow_dynamic_page_html():
 @app.route('/dynamic-page')
 def dynamic_page_html():
     person_name = request.args.get('person-name')
-    with open('pages/dynamic-page.html') as f:
+    with open('pages/dynamic.html') as f:
         page = f.read()
     filled_page = chevron.render(page, {'name': person_name})
     return filled_page
@@ -84,6 +85,41 @@ def get_database_data():
             cursor.execute("SELECT id, iso2, iso3, denomination FROM countries")
             return jsonify(cursor.fetchall())
 
+
+# 09 micro application
+# /home displays the login page
+# /login performs the login, put the username in session and displays the dashboard page on success
+# /logout removes the username from the session
+@app.route('/home')
+def get_home():
+    with open('pages/login.html') as f:
+        return f.read()
+
+@app.route('/login', methods=['POST'])
+def post_login():
+    username = request.form['username']
+    password = request.form['password']
+    # check password using the db; if failure, return error page
+    with open(Path.home() / 'database_connection.json') as f:
+        connection_parameters = json.load(f)
+    with mariadb.connect(**connection_parameters) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT username, password FROM users WHERE username = %s", (username,))
+            result = cursor.fetchone()
+            if result is None:
+                return "Error: Invalid username"
+            elif result[1] != password:
+                return "Error: Invalid password"
+    # put the username in the session
+    session['username'] = username
+    with open('pages/dashboard.html') as f:
+        return chevron.render(f.read(), {'username': session['username']})
+
+@app.route('/logout')
+def get_logout():
+    session.pop('username', None)
+    with open('pages/login.html') as f:
+        return f.read()
 
 if __name__ == '__main__':
     app.run()
