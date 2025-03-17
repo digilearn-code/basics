@@ -1,0 +1,8 @@
+### GET request to example server
+
+GET https://basics.digilearn.be/
+Accept: */*
+
+###
+
+GET https://basics.digilearn.be/image
